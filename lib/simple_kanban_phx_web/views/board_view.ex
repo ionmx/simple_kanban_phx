@@ -7,8 +7,11 @@ defmodule SimpleKanbanPhxWeb.BoardView do
   end
 
   def render("show.json", %{board: board}) do
-    #%{data: render_one(board, BoardView, "board.json")}
     %{data: render_one(board, BoardView, "board_all_data.json")}
+  end
+
+  def render("show_single.json", %{board: board}) do
+    %{data: render_one(board, BoardView, "board.json")}
   end
 
   def render("board.json", %{board: board}) do
@@ -20,7 +23,6 @@ defmodule SimpleKanbanPhxWeb.BoardView do
   end
 
   def render("board_all_data.json", %{board: board}) do
-    #%{data: render_one(board, BoardView, "board.json")}
     %{
       id: board.id,
       title: board.title,

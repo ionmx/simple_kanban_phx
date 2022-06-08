@@ -11,12 +11,12 @@ defmodule SimpleKanbanPhxWeb.BoardController do
     render(conn, "index.json", boards: boards)
   end
 
-  def create(conn, %{"board" => board_params}) do
+  def create(conn, board_params) do
     with {:ok, %Board{} = board} <- Kanban.create_board(board_params) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", Routes.board_path(conn, :show, board))
-      |> render("show.json", board: board)
+      |> render("show_single.json", board: board)
     end
   end
 
