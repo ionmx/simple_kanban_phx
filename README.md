@@ -1,5 +1,9 @@
 # SimpleKanbanPhx
 
+This is an example API written in Phoenix.
+
+## Start
+
 To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`
