@@ -11,11 +11,11 @@ defmodule SimpleKanbanPhxWeb.TaskController do
     render(conn, "index.json", tasks: tasks)
   end
 
-  def create(conn, %{"task" => task_params}) do
-    with {:ok, %Task{} = task} <- Kanban.create_task(task_params) do
+  def create(conn,task_params) do
+    column = Kanban.get_column!(task_params["column_id"])
+    with {:ok, %Task{} = task} <- Kanban.create_task(column, task_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", Routes.board_column_task_path(conn, :show, task_params[:board_id], task_params[:column_id], task))
       |> render("show.json", task: task)
     end
   end

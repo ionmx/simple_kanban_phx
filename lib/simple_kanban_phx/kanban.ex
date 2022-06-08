@@ -37,19 +37,19 @@ defmodule SimpleKanbanPhx.Kanban do
 
   ## Examples
 
-      iex> get_board!(123)
+      iex> get_single_board!(123)
       %Board{}
 
-      iex> get_board!(456)
+      iex> get_single_board!(456)
       ** (Ecto.NoResultsError)
 
   """
-  #def get_board!(id), do: Repo.get!(Board, id)
+  def get_single_board!(id), do: Repo.get!(Board, id)
 
+  @doc """
+  Gets a single board with columns and tasks.
+  """
   def get_board!(id) do
-    # Board
-    # |> Repo.get!(id)
-    # |> Repo.preload(:columns)
     id
     |> board_with_columns_and_tasks_query()
     |> Repo.one!()
@@ -275,18 +275,10 @@ defmodule SimpleKanbanPhx.Kanban do
 
   @doc """
   Creates a task.
-
-  ## Examples
-
-      iex> create_task(%{field: value})
-      {:ok, %Task{}}
-
-      iex> create_task(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
   """
-  def create_task(attrs \\ %{}) do
-    %Task{}
+  def create_task(%Column{} = column, attrs \\ %{}) do
+    column
+    |> Ecto.build_assoc(:tasks)
     |> Task.changeset(attrs)
     |> Repo.insert()
   end
