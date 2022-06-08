@@ -12,7 +12,8 @@ defmodule SimpleKanbanPhxWeb.BoardController do
   end
 
   def create(conn, board_params) do
-    with {:ok, %Board{} = board} <- Kanban.create_board(board_params) do
+    cb = Kanban.create_board_with_columns(board_params)
+    with {:ok, %{ board: board, done: _done, inproccess: _inproccess, todo: _todo}} <- cb do
       conn
       |> put_status(:created)
       |> put_resp_header("location", Routes.board_path(conn, :show, board))
@@ -22,7 +23,6 @@ defmodule SimpleKanbanPhxWeb.BoardController do
 
   def show(conn, %{"id" => id}) do
     board = Kanban.get_board!(id)
-    IO.inspect(board)
     render(conn, "show.json", board: board, columns: board.columns)
   end
 

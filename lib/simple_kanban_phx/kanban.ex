@@ -5,8 +5,10 @@ defmodule SimpleKanbanPhx.Kanban do
 
   import Ecto.Query, warn: false
   alias SimpleKanbanPhx.Repo
-
   alias SimpleKanbanPhx.Kanban.Board
+  alias SimpleKanbanPhx.Kanban.Column
+  alias SimpleKanbanPhx.Kanban.Task
+  alias Ecto.Multi
 
   @doc """
   Returns the list of boards.
@@ -72,6 +74,25 @@ defmodule SimpleKanbanPhx.Kanban do
   end
 
   @doc """
+  Creates a board and add defaults columns.
+  """
+  def create_board_with_columns(attrs \\ %{}) do
+    Multi.new
+    |> Multi.insert(:board, Board.changeset(%Board{}, attrs))
+    |> Ecto.Multi.insert(:todo, fn %{board: board} ->
+      Ecto.build_assoc(board, :columns, title: "To Do", position: 1)
+    end)
+    |> Ecto.Multi.insert(:inproccess, fn %{board: board} ->
+      Ecto.build_assoc(board, :columns, title: "In Proccess", position: 2)
+    end)
+    |> Ecto.Multi.insert(:done, fn %{board: board} ->
+      Ecto.build_assoc(board, :columns, title: "Done", position: 3)
+    end)
+    |> Repo.transaction()
+  end
+
+
+  @doc """
   Updates a board.
 
   ## Examples
@@ -117,8 +138,6 @@ defmodule SimpleKanbanPhx.Kanban do
   def change_board(%Board{} = board, attrs \\ %{}) do
     Board.changeset(board, attrs)
   end
-
-  alias SimpleKanbanPhx.Kanban.Column
 
   @doc """
   Returns the list of columns.
@@ -219,10 +238,6 @@ defmodule SimpleKanbanPhx.Kanban do
     from c in Column,
       preload: [tasks: ^tasks_query()]
   end
-
-
-
-  alias SimpleKanbanPhx.Kanban.Task
 
   # Query for tasks
   defp tasks_query() do
