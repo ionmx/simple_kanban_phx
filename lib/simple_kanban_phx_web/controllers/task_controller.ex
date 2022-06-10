@@ -40,4 +40,9 @@ defmodule SimpleKanbanPhxWeb.TaskController do
       send_resp(conn, :no_content, "")
     end
   end
+
+  def move_task(conn, params) do
+    Kanban.move_task(params)
+    send_resp(conn, :no_content, "")
+  end
 end

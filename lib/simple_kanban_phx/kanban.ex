@@ -80,13 +80,13 @@ defmodule SimpleKanbanPhx.Kanban do
     Multi.new
     |> Multi.insert(:board, Board.changeset(%Board{}, attrs))
     |> Ecto.Multi.insert(:todo, fn %{board: board} ->
-      Ecto.build_assoc(board, :columns, title: "To Do", position: 1)
+      Ecto.build_assoc(board, :columns, title: "To Do", position: 0)
     end)
     |> Ecto.Multi.insert(:inproccess, fn %{board: board} ->
-      Ecto.build_assoc(board, :columns, title: "In Proccess", position: 2)
+      Ecto.build_assoc(board, :columns, title: "In Proccess", position: 1)
     end)
     |> Ecto.Multi.insert(:done, fn %{board: board} ->
-      Ecto.build_assoc(board, :columns, title: "Done", position: 3)
+      Ecto.build_assoc(board, :columns, title: "Done", position: 2)
     end)
     |> Repo.transaction()
   end
@@ -236,12 +236,14 @@ defmodule SimpleKanbanPhx.Kanban do
   # Query for columns
   defp columns_query do
     from c in Column,
+      order_by: :position,
       preload: [tasks: ^tasks_query()]
   end
 
   # Query for tasks
   defp tasks_query() do
-    from t in Task
+    from t in Task,
+      order_by: :position
   end
 
   @doc """
@@ -277,9 +279,14 @@ defmodule SimpleKanbanPhx.Kanban do
   Creates a task.
   """
   def create_task(%Column{} = column, attrs \\ %{}) do
+    task_query = from t in Task,
+                 where: t.column_id == ^column.id
+
+    max_pos = Repo.aggregate(task_query, :max, :position) || -1
+
     column
     |> Ecto.build_assoc(:tasks)
-    |> Task.changeset(attrs)
+    |> Task.changeset(Map.merge(attrs, %{"position" => max_pos + 1}))
     |> Repo.insert()
   end
 
@@ -328,5 +335,39 @@ defmodule SimpleKanbanPhx.Kanban do
   """
   def change_task(%Task{} = task, attrs \\ %{}) do
     Task.changeset(task, attrs)
+  end
+
+  @doc """
+  Move a task to a column / position
+  """
+  def move_task(attrs) do
+
+    task = get_task!(attrs["task"])
+
+    # Update source positions
+    query_source_pos =
+      from t in "tasks",
+      where: t.column_id == ^task.column_id,
+      where: t.position > ^task.position,
+      update: [inc: [position: -1]]
+    Repo.update_all(query_source_pos, [])
+
+    # Update destination positions
+    query_dest_pos =
+      from t in "tasks",
+      where: t.column_id == ^attrs["destination"],
+      where: t.position >= ^attrs["position"],
+      update: [inc: [position: 1]]
+    Repo.update_all(query_dest_pos, [])
+
+    # Update task
+    query_task =
+      from t in "tasks",
+      where: t.id == ^task.id,
+      update: [set: [column_id: ^attrs["destination"], position: ^attrs["position"]]]
+    Repo.update_all(query_task, [])
+
+    %{ok: true}
+
   end
 end
