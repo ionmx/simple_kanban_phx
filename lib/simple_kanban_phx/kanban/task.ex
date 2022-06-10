@@ -13,6 +13,6 @@ defmodule SimpleKanbanPhx.Kanban.Task do
   def changeset(task, attrs) do
     task
     |> cast(attrs, [:description, :position])
-    |> validate_required([:description, :position])
+    |> validate_required([:description])
   end
 end
