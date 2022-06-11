@@ -1,8 +1,8 @@
 # SimpleKanbanPhx
 
-This is an example Kanban Board API written in Phoenix.
+This is an example Kanban Board API written in [Phoenix Framework](https://phoenixframework.org/).
 
-React Front-End repo: https://github.com/ionmx/simple-kanban-react
+You can test it with this React Front End: https://github.com/ionmx/simple-kanban-react
 
 ## Start
 
