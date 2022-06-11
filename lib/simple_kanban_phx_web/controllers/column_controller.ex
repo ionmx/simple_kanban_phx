@@ -41,4 +41,9 @@ defmodule SimpleKanbanPhxWeb.ColumnController do
       send_resp(conn, :no_content, "")
     end
   end
+
+  def move_column(conn, params) do
+    Kanban.move_column(params)
+    send_resp(conn, :no_content, "")
+  end
 end

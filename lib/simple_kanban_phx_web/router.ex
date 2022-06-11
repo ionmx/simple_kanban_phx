@@ -11,6 +11,7 @@ defmodule SimpleKanbanPhxWeb.Router do
     scope "/v1" do
       resources "/boards", BoardController, except: [:new, :edit] do
         post "/move-task", TaskController, :move_task, as: :move_task
+        post "/move-column", ColumnController, :move_column, as: :move_column
         resources "/columns", ColumnController, except: [:new, :edit] do
           resources "/tasks", TaskController, except: [:new, :edit]
         end

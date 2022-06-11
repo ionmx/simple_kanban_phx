@@ -240,6 +240,38 @@ defmodule SimpleKanbanPhx.Kanban do
       preload: [tasks: ^tasks_query()]
   end
 
+   @doc """
+  Move a task to a column / position
+  """
+  def move_column(attrs) do
+    column = get_column!(attrs["column"])
+
+    # Update the other columns positions
+    query_source_pos =
+      from c in "columns",
+      where: c.board_id == ^column.board_id,
+      where: c.position > ^column.position,
+      update: [inc: [position: -1]]
+    Repo.update_all(query_source_pos, [])
+
+    query_dest_pos =
+      from c in "columns",
+      where: c.board_id == ^column.board_id,
+      where: c.position >= ^attrs["position"],
+      update: [inc: [position: 1]]
+    Repo.update_all(query_dest_pos, [])
+
+    # Update column position
+    query_task =
+      from c in "columns",
+      where: c.id == ^column.id,
+      update: [set: [position: ^attrs["position"]]]
+    Repo.update_all(query_task, [])
+
+    %{ok: true}
+
+  end
+
   # Query for tasks
   defp tasks_query() do
     from t in Task,
