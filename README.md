@@ -1,6 +1,8 @@
 # SimpleKanbanPhx
 
-This is an example API written in Phoenix.
+This is an example Kanban Board API written in Phoenix.
+
+React Front-End repo: https://github.com/ionmx/simple-kanban-react
 
 ## Start
 
@@ -10,14 +12,4 @@ To start your Phoenix server:
   * Create and migrate your database with `mix ecto.setup`
   * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
-
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
-
-## Learn more
-
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+Now API is available at [`localhost:4000`](http://localhost:4000).
