@@ -180,9 +180,15 @@ defmodule SimpleKanbanPhx.Kanban do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_column(attrs \\ %{}) do
-    %Column{}
-    |> Column.changeset(attrs)
+  def create_column(%Board{} = board, attrs \\ %{}) do
+    col_query = from c in Column,
+                 where: c.board_id == ^board.id
+
+    max_pos = Repo.aggregate(col_query, :max, :position) || -1
+
+    board
+    |> Ecto.build_assoc(:columns)
+    |> Column.changeset(Map.merge(attrs, %{"position" => max_pos + 1}))
     |> Repo.insert()
   end
 

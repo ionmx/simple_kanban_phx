@@ -11,12 +11,12 @@ defmodule SimpleKanbanPhxWeb.ColumnController do
     render(conn, "index.json", columns: columns)
   end
 
-  def create(conn, %{"column" => column_params}) do
-    with {:ok, %Column{} = column} <- Kanban.create_column(column_params) do
+  def create(conn, column_params) do
+    board = Kanban.get_single_board!(column_params["board_id"])
+    with {:ok, %Column{} = column} <- Kanban.create_column(board, column_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", Routes.board_column_path(conn, :show, column))
-      |> render("show.json", column: column)
+      |> render("show_simple.json", column: column)
     end
   end
 

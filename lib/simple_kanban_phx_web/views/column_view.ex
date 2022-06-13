@@ -6,6 +6,14 @@ defmodule SimpleKanbanPhxWeb.ColumnView do
     %{data: render_many(columns, ColumnView, "column.json")}
   end
 
+  def render("show_simple.json", %{column: column}) do
+    %{data: %{
+      id: column.id,
+      title: column.title,
+      position: column.position
+    }}
+  end
+
   def render("show.json", %{column: column}) do
     %{data: render_one(column, ColumnView, "column.json")}
   end
