@@ -25,10 +25,10 @@ defmodule SimpleKanbanPhxWeb.TaskController do
     render(conn, "show.json", task: task)
   end
 
-  def update(conn, %{"id" => id, "task" => task_params}) do
-    task = Kanban.get_task!(id)
+  def update(conn, params) do
+    task = Kanban.get_task!(params["id"])
 
-    with {:ok, %Task{} = task} <- Kanban.update_task(task, task_params) do
+    with {:ok, %Task{} = task} <- Kanban.update_task(task, params) do
       render(conn, "show.json", task: task)
     end
   end
