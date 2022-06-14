@@ -26,11 +26,11 @@ defmodule SimpleKanbanPhxWeb.ColumnController do
     render(conn, "show.json", column: column)
   end
 
-  def update(conn, %{"id" => id, "column" => column_params}) do
-    column = Kanban.get_column!(id)
+  def update(conn, params) do
+    column = Kanban.get_column!(params["id"])
 
-    with {:ok, %Column{} = column} <- Kanban.update_column(column, column_params) do
-      render(conn, "show.json", column: column)
+    with {:ok, %Column{} = column} <- Kanban.update_column(column, params) do
+      render(conn, "show_simple.json", column: column)
     end
   end
 
