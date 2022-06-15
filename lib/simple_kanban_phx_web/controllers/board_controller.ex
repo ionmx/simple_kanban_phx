@@ -26,11 +26,11 @@ defmodule SimpleKanbanPhxWeb.BoardController do
     render(conn, "show.json", board: board, columns: board.columns)
   end
 
-  def update(conn, %{"id" => id, "board" => board_params}) do
-    board = Kanban.get_board!(id)
+  def update(conn, params) do
+    board = Kanban.get_board!(params["id"])
 
-    with {:ok, %Board{} = board} <- Kanban.update_board(board, board_params) do
-      render(conn, "show.json", board: board)
+    with {:ok, %Board{} = board} <- Kanban.update_board(board, params) do
+      render(conn, "show_single.json", board: board)
     end
   end
 
