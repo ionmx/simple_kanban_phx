@@ -1,7 +1,7 @@
 import Config
 
-url: [scheme: "https", host: "my-simple-kanban.herokuapp.com", port: 443],
-force_ssl: [rewrite_on: [:x_forwarded_proto]],
+config :simple_kanban_phx, SimpleKanbanPhxWeb.Endpoint, url: [scheme: "https", host: "my-simple-kanban.herokuapp.com", port: 443]
+config :simple_kanban_phx, SimpleKanbanPhxWeb.Endpoint, force_ssl: [rewrite_on: [:x_forwarded_proto]]
 
 # For production, don't forget to configure the url host
 # to something meaningful, Phoenix uses this information
