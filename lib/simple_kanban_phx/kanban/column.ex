@@ -6,7 +6,7 @@ defmodule SimpleKanbanPhx.Kanban.Column do
     field :position, :integer
     field :title, :string
     belongs_to :board, SimpleKanbanPhx.Kanban.Board
-    has_many :tasks, SimpleKanbanPhx.Kanban.Task
+    has_many :tasks, SimpleKanbanPhx.Kanban.Task, on_delete: :delete_all
     timestamps()
   end
 

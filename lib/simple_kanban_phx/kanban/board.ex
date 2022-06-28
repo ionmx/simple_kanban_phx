@@ -5,7 +5,7 @@ defmodule SimpleKanbanPhx.Kanban.Board do
   schema "boards" do
     field :description, :string
     field :title, :string
-    has_many :columns, SimpleKanbanPhx.Kanban.Column
+    has_many :columns, SimpleKanbanPhx.Kanban.Column, on_delete: :delete_all
     timestamps()
   end
 

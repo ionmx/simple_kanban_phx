@@ -5,7 +5,7 @@ defmodule SimpleKanbanPhx.Repo.Migrations.CreateColumns do
     create table(:columns) do
       add :title, :string
       add :position, :integer
-      add :board_id, references(:boards, on_delete: :nothing)
+      add :board_id, references(:boards, on_delete: :delete_all)
 
       timestamps()
     end
